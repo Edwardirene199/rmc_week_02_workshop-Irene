@@ -11,15 +11,36 @@ data_ncd <- read_csv(here("data", "burden-of-disease-ncd.csv"))
 ## Table of Estimates for NCD Burden Over Time
 
 ```{r}
-# Here render a table for the DALY burden over time for the three countries 
+# Here render a table for the DALY burden over time for the three countries library(dplyr)
+library(tidyr)
+library(knitr)
+  library(ggplot2)
+filtered_data <- data_ncd %>%
+  filter(Entity %in% c("Tanzania", "South Africa", "Zambia"))
+
 # You should pivot the data to show each country in a separate column.
+daily_burden_ncd <- filtered_data %>%
+  pivot_wider(names_from = Entity,
+              values_from = 'DALYs (Disability-Adjusted Life Years) - Non-communicable diseases - Sex: Both - Age: Age-standardized (Rate)')
+print(daily_burden_ncd)
+ 
 # Use kable() from the knitr package to render the table.
+kable( daily_burden_ncd, format = "html")
+
 ```
 
 ## Plot Showing Trends in NCD Burden Over Time 
 
 ```{r}
 # Here, plot a line graph showing the trend of DALY burden for the chosen countries over time. You can use ggplot2 to create this plot. Each country's line should be a different color.
+ggplot(filtered_data, aes(x = Year, 
+                            y = `DALYs (Disability-Adjusted Life Years) - Non-communicable diseases - Sex: Both - Age: Age-standardized (Rate)`, 
+                            group = Entity, 
+                            color = Entity)) +
+    geom_line() +
+    labs(title = "Trend of DALYs Burden over time")
+  
+
 ```
 
 ## Summary of NCD Burden Findings
